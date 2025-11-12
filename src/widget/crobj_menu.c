@@ -1,5 +1,5 @@
 /**
- * @file menu.c
+ * @file crobj_menu.c
  *
  */
 
@@ -19,10 +19,11 @@
 #include <errno.h>
 
 #include <lvgl.h>
-#include "../include/ui_core.h"
-#include "../include/grid.h"
-#include "../include/flex.h"
-#include "../include/widget/menu.h"
+#include "../../include/crobj_core.h"
+#include "../../include/crobj_grid.h"
+#include "../../include/crobj_flex.h"
+#include "../../include/widget/crobj_widget_menu.h"
+#include "../../include/widget/crobj_widget_common.h"
 
 /*
  * Each window can host a child Menu View/View container, enabling nested menus.

@@ -1,10 +1,10 @@
 /**
- * @file ui_core.h
+ * @file crobj_core.h
  *
  */
 
-#ifndef G_UI_CORE_H
-#define G_UI_CORE_H
+#ifndef G_CROBJ_CORE_H
+#define G_CROBJ_CORE_H
 /*********************
  *      INCLUDES
  *********************/
@@ -337,4 +337,4 @@ void ui_main_deinit(ctx_t *ctx);
  *      MACROS
  **********************/
 
-#endif /* G_UI_CORE_H */
+#endif /* G_CROBJ_CORE_H */

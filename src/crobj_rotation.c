@@ -1,5 +1,5 @@
 /**
- * @file rotation.c
+ * @file crobj_rotation.c
  *
  */
 
@@ -16,10 +16,10 @@
 #include <errno.h>
 
 #include <lvgl.h>
-#include "list.h"
-#include "../include/ui_core.h"
-#include "../include/grid.h"
-#include "../include/flex.h"
+#include "../include/list.h"
+#include "../include/crobj_core.h"
+#include "../include/crobj_grid.h"
+#include "../include/crobj_flex.h"
 #include "main.h"
 
 /*********************

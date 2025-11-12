@@ -1,5 +1,5 @@
 /**
- * @file grid.c
+ * @file crobj_grid.c
  *
  */
 
@@ -18,9 +18,9 @@
 #include <stdbool.h>
 
 #include <lvgl.h>
-#include "list.h"
-#include "../include/ui_core.h"
-#include "../include/grid.h"
+#include "../../include/list.h"
+#include "../../include/crobj_core.h"
+#include "../../include/crobj_grid.h"
 
 /*********************
  *      DEFINES

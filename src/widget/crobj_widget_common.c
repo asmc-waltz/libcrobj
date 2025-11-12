@@ -1,5 +1,5 @@
 /**
- * @file common.c
+ * @file crobj_widget_common.c
  *
  */
 
@@ -19,11 +19,9 @@
 #include <errno.h>
 
 #include <lvgl.h>
-#include "list.h"
-#include "../include/ui_core.h"
-#include "../include/grid.h"
-#include "../include/flex.h"
-#include "../include/widget/menu.h"
+#include "../../include/crobj_flex.h"
+#include "../../include/widget/crobj_widget_common.h"
+#include "../../include/crobj_core.h"
 
 /*********************
  *      DEFINES

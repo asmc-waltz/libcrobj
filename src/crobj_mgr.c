@@ -1,5 +1,5 @@
 /**
- * @file obj.c
+ * @file crobj_mgr.c
  *
  */
 
@@ -19,8 +19,8 @@
 #include <errno.h>
 
 #include <lvgl.h>
-#include "list.h"
-#include "../include/ui_core.h"
+#include "../include/list.h"
+#include "../include/crobj_core.h"
 #include "main.h"
 
 /*********************

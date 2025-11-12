@@ -1,5 +1,5 @@
 /**
- * @file flex.c
+ * @file crobj_flex.c
  *
  */
 
@@ -18,9 +18,8 @@
 #include <stdbool.h>
 
 #include <lvgl.h>
-#include "list.h"
-#include "../include/ui_core.h"
-#include "../include/flex.h"
+#include "../../include/crobj_core.h"
+#include "../../include/crobj_flex.h"
 
 /*********************
  *      DEFINES

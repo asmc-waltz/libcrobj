@@ -1,16 +1,17 @@
 /**
- * @file flex.h
+ * @file crobj_flex.h
  *
  */
 
-#ifndef G_FLEX_H
-#define G_FLEX_H
+#ifndef G_CROBJ_FLEX_H
+#define G_CROBJ_FLEX_H
 /*********************
  *      INCLUDES
  *********************/
 #include <stdint.h>
 
 #include <lvgl.h>
+#include "crobj_core.h"
 /*********************
  *      DEFINES
  *********************/
@@ -90,4 +91,4 @@ static inline int32_t scroll_to_first_child(lv_obj_t *par)
  *      MACROS
  **********************/
 
-#endif /* G_FLEX_H */
+#endif /* G_CROBJ_FLEX_H */

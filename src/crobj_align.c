@@ -1,5 +1,5 @@
 /**
- * @file align.c
+ * @file crobj_align.c
  *
  */
 
@@ -16,9 +16,7 @@
 #include <errno.h>
 
 #include <lvgl.h>
-#include "list.h"
-#include "../include/ui_core.h"
-
+#include "../include/crobj_core.h"
 
 /*********************
  *      DEFINES

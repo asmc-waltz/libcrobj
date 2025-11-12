@@ -1,17 +1,17 @@
 /**
- * @file menu.h
+ * @file crobj_widget_menu.h
  *
  */
 
-#ifndef G_MENU_H
-#define G_MENU_H
+#ifndef G_CROBJ_WIDGET_MENU_H
+#define G_CROBJ_WIDGET_MENU_H
 /*********************
  *      INCLUDES
  *********************/
 #include <stdint.h>
 
 #include <lvgl.h>
-#include "../ui_core.h"
+#include "../crobj_core.h"
 
 /*********************
  *      DEFINES
@@ -134,12 +134,6 @@ static inline lv_obj_t *get_menu(view_ctn_t *v_ctx) {
 /*=====================
  * Other functions
  *====================*/
-lv_obj_t *create_vertical_flex_group(lv_obj_t *par, const char *name);
-lv_obj_t *create_vscroll_flex_group(lv_obj_t *par, const char *name);
-lv_obj_t *create_horizontal_flex_group(lv_obj_t *par, const char *name);
-lv_obj_t *create_hscroll_flex_group(lv_obj_t *par, \
-                                                const char *name);
-
 lv_obj_t *create_menu(lv_obj_t *menu);
 lv_obj_t *create_menu_group(lv_obj_t *par, const char *name);
 
@@ -178,4 +172,4 @@ view_ctn_t *create_common_menu_view(lv_obj_t *par, const char *name, \
  *      MACROS
  **********************/
 
-#endif /* G_MENU_H */
+#endif /* G_CROBJ_WIDGET_MENU_H */

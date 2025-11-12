@@ -1,5 +1,5 @@
 /**
- * @file border.c
+ * @file crobj_border.c
  *
  */
 
@@ -17,8 +17,7 @@
 #include <errno.h>
 
 #include <lvgl.h>
-#include "list.h"
-#include "../include/ui_core.h"
+#include "../include/crobj_core.h"
 #include "main.h"
 
 /*********************

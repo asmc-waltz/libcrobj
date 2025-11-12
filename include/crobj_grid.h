@@ -1,16 +1,17 @@
 /**
- * @file grid.h
+ * @file crobj_grid.h
  *
  */
 
-#ifndef G_GRID_H
-#define G_GRID_H
+#ifndef G_CROBJ_GRID_H
+#define G_CROBJ_GRID_H
 /*********************
  *      INCLUDES
  *********************/
 #include <stdint.h>
 
 #include <lvgl.h>
+#include "crobj_core.h"
 /*********************
  *      DEFINES
  *********************/
@@ -148,4 +149,4 @@ static inline grid_rc_t *get_cell_col_data(lv_obj_t *lobj)
  *      MACROS
  **********************/
 
-#endif /* G_GRID_H */
+#endif /* G_CROBJ_GRID_H */

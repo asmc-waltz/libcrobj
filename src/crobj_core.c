@@ -1,5 +1,5 @@
 /**
- * @file ui_controller.c
+ * @file crobj_core.c
  *
  */
 
@@ -19,8 +19,7 @@
 #include <unistd.h>
 
 #include <lvgl.h>
-#include "list.h"
-#include "../include/ui_core.h"
+#include "../include/crobj_core.h"
 #include "main.h"
 
 /*********************
