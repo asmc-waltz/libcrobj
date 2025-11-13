@@ -18,7 +18,6 @@
 
 #include <lvgl.h>
 #include "../include/crobj_core.h"
-#include "main.h"
 
 /*********************
  *      DEFINES

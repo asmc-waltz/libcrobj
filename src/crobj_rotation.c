@@ -20,7 +20,7 @@
 #include "../include/crobj_core.h"
 #include "../include/crobj_grid.h"
 #include "../include/crobj_flex.h"
-#include "main.h"
+#include "../include/crobj_scr.h"
 
 /*********************
  *      DEFINES

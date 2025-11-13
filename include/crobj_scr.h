@@ -1,10 +1,10 @@
 /**
- * @file screen.h
+ * @file crobj_scr.h
  *
  */
 
-#ifndef G_SCREEN_H
-#define G_SCREEN_H
+#ifndef G_CROBJ_SCR_H
+#define G_CROBJ_SCR_H
 /*********************
  *      INCLUDES
  *********************/
@@ -45,6 +45,16 @@ typedef struct screen {
     space_t now;
 } scr_ctx_t;
 
+typedef struct obj_ctx {
+    struct list_head list;              /* List of registered UI objects */
+    uint32_t next_id;
+} obj_ctx_t;
+
+typedef struct ctx {
+    obj_ctx_t objs;
+    scr_ctx_t scr;
+} ctx_t;
+
 /**********************
  *  GLOBAL VARIABLES
  **********************/
@@ -59,6 +69,7 @@ typedef struct screen {
 /*=====================
  * Getter functions
  *====================*/
+ctx_t *get_ctx();
 
 /*=====================
  * Other functions
@@ -69,4 +80,4 @@ lv_obj_t *create_common_screen(ctx_t *ctx, lv_obj_t *par, const char *name);
  *      MACROS
  **********************/
 
-#endif /* G_SCREEN_H */
+#endif /* G_CROBJ_SCR_H */

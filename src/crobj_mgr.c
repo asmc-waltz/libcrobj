@@ -21,7 +21,7 @@
 #include <lvgl.h>
 #include "../include/list.h"
 #include "../include/crobj_core.h"
-#include "main.h"
+#include "../include/crobj_scr.h"
 
 /*********************
  *      DEFINES
