@@ -343,12 +343,12 @@ int32_t remove_children(lv_obj_t *par)
 /**
  * init_ui_object_list - Allocate and initialize the global ui object list 
  */
-int32_t init_ui_object_ctx(ctx_t *ctx)
+int32_t init_ui_object_ctx(gui_ctx_t *g_ctx)
 {
-    if (ctx == NULL)
+    if (g_ctx == NULL)
         return -EINVAL;
 
-    INIT_LIST_HEAD(&ctx->objs.list);
+    INIT_LIST_HEAD(&g_ctx->objs.list);
 
     return 0;
 }
@@ -360,13 +360,13 @@ int32_t init_ui_object_ctx(ctx_t *ctx)
  * This function removes all registered objects and handlers from the given
  * context, then frees the context itself. Safe to call with NULL pointer.
  */
-void destroy_ui_object_ctx(ctx_t *ctx)
+void destroy_ui_object_ctx(gui_ctx_t *g_ctx)
 {
-    if (!ctx)
+    if (!g_ctx)
         return;
 
-    remove_obj_and_child(ID_NOID, &ctx->objs.list);
-    ctx->objs.next_id = 1;
+    remove_obj_and_child(ID_NOID, &g_ctx->objs.list);
+    g_ctx->objs.next_id = 1;
 }
 
 void set_internal_data(lv_obj_t *lobj, void *data)

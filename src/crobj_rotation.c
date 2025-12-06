@@ -601,22 +601,22 @@ static int32_t refresh_object_child(lv_obj_t *lobj)
  **********************/
 int32_t set_scr_rotation(int32_t rot_dir)
 {
-    ctx_t *ctx = get_ctx();
-    if (ctx == NULL)
+    gui_ctx_t *g_ctx = get_ctx();
+    if (g_ctx == NULL)
         return -EINVAL;
 
-    ctx->scr.rotation = rot_dir;
+    g_ctx->scr.rotation = rot_dir;
 
     return 0;
 }
 
 int32_t get_scr_rotation()
 {
-    ctx_t *ctx = get_ctx();
-    if (ctx == NULL)
+    gui_ctx_t *g_ctx = get_ctx();
+    if (g_ctx == NULL)
         return -EINVAL;
 
-    return ctx->scr.rotation;
+    return g_ctx->scr.rotation;
 }
 
 /*

@@ -30,8 +30,6 @@
 /**********************
  *      TYPEDEFS
  **********************/
-typedef struct ctx ctx_t;
-
 typedef struct scr_space {
     lv_obj_t *obj;
 } space_t;
@@ -50,10 +48,10 @@ typedef struct obj_ctx {
     uint32_t next_id;
 } obj_ctx_t;
 
-typedef struct ctx {
+typedef struct gui {
     obj_ctx_t objs;
     scr_ctx_t scr;
-} ctx_t;
+} gui_ctx_t;
 
 /**********************
  *  GLOBAL VARIABLES
@@ -69,12 +67,12 @@ typedef struct ctx {
 /*=====================
  * Getter functions
  *====================*/
-ctx_t *get_ctx();
+gui_ctx_t *get_ctx();
 
 /*=====================
  * Other functions
  *====================*/
-lv_obj_t *create_common_screen(ctx_t *ctx, lv_obj_t *par, const char *name);
+lv_obj_t *create_common_screen(gui_ctx_t *g_ctx, lv_obj_t *par, const char *name);
 
 /**********************
  *      MACROS

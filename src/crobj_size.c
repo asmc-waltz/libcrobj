@@ -79,32 +79,32 @@ int32_t rotate_size_meta_90(lv_obj_t *lobj)
 
 int32_t set_scr_size(int32_t width, int32_t height)
 {
-    ctx_t *ctx = get_ctx();
-    if (ctx == NULL)
+    gui_ctx_t *g_ctx = get_ctx();
+    if (g_ctx == NULL)
         return -EINVAL;
 
-    ctx->scr.width = width;
-    ctx->scr.height = height;
+    g_ctx->scr.width = width;
+    g_ctx->scr.height = height;
 
     return 0;
 }
 
 int32_t get_scr_width(void)
 {
-    ctx_t *ctx = get_ctx();
-    if (ctx == NULL)
+    gui_ctx_t *g_ctx = get_ctx();
+    if (g_ctx == NULL)
         return -EINVAL;
 
-    return ctx->scr.width;
+    return g_ctx->scr.width;
 }
 
 int32_t get_scr_height(void)
 {
-    ctx_t *ctx = get_ctx();
-    if (ctx == NULL)
+    gui_ctx_t *g_ctx = get_ctx();
+    if (g_ctx == NULL)
         return -EINVAL;
 
-    return ctx->scr.height;
+    return g_ctx->scr.height;
 }
 
 /*

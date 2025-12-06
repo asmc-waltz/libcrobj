@@ -100,33 +100,34 @@ static void gtimer_handler(lv_timer_t * timer)
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
-int32_t ui_main_init(ctx_t *ctx)
+int32_t ui_main_init(gui_ctx_t *g_ctx)
 {
+
     lv_timer_t *task_timer = NULL;
     lv_obj_t *com_scr = NULL;
     obj_meta_t *meta = NULL;
     int32_t ret;
 
-    ret = init_ui_object_ctx(ctx);
+    ret = init_ui_object_ctx(g_ctx);
     if (ret) {
         LOG_FATAL("Unable to init ui object list head");
         return ret;
     }
 
-    ctx->objs.next_id = 1;
+    g_ctx->objs.next_id = 1;
 
     set_scr_size(DISP_WIDTH, DISP_HEIGHT);
 
     // Initialize LVGL and the associated UI hardware
     lv_init();
-    ctx->scr.drm_disp = sf_init_drm_display(DRM_CARD, DRM_CONNECTOR_ID);
-    if (ctx->scr.drm_disp == NULL) {
+    g_ctx->scr.drm_disp = sf_init_drm_display(DRM_CARD, DRM_CONNECTOR_ID);
+    if (g_ctx->scr.drm_disp == NULL) {
         return -EIO;
     }
 
-    ctx->scr.touch_event = sf_init_touch_screen(TOUCH_EVENT_FILE, \
-                                                ctx->scr.drm_disp);
-    if (ctx->scr.touch_event == NULL) {
+    g_ctx->scr.touch_event = sf_init_touch_screen(TOUCH_EVENT_FILE, \
+                                                g_ctx->scr.drm_disp);
+    if (g_ctx->scr.touch_event == NULL) {
         return -EIO;
     }
 
@@ -172,19 +173,19 @@ int32_t ui_main_init(ctx_t *ctx)
         return -ENOMEM;
     }
 
-    com_scr = create_common_screen(ctx, lv_screen_active(), LAYOUT_SETTING);
+    com_scr = create_common_screen(g_ctx, lv_screen_active(), LAYOUT_SETTING);
     if (!com_scr) {
         LOG_ERROR("Failed to create main screen, no content can be displayed");
         return -EIO;
     }
 
     LOG_DEBUG("size of obj_meta_t: %d", sizeof(obj_meta_t));
-    LOG_DEBUG("size of ctx_t: %d", sizeof(ctx_t));
+    LOG_DEBUG("size of gui_ctx_t: %d", sizeof(gui_ctx_t));
 
     return 0;
 }
 
-void ui_main_deinit(ctx_t *ctx)
+void ui_main_deinit(gui_ctx_t *g_ctx)
 {
-    destroy_ui_object_ctx(ctx);
+    destroy_ui_object_ctx(g_ctx);
 }
