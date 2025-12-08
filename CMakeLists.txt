@@ -85,6 +85,12 @@ target_include_directories(crobj
 # ------------------------------------------------------------
 include(GNUInstallDirs)
 
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/libcrobj.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/libcrobj.pc
+    @ONLY
+)
+
 install(TARGETS crobj
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -92,8 +98,13 @@ install(TARGETS crobj
 )
 
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/crobj/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/crobj
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libcrobj
+)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/libcrobj.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
 # ------------------------------------------------------------
