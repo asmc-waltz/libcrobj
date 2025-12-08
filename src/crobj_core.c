@@ -92,9 +92,10 @@ static lv_indev_t *sf_init_touch_screen(const char *dev_path, \
     return indev;
 }
 
-static void gtimer_handler(lv_timer_t * timer)
+static void gtimer_handler(lv_timer_t *timer)
 {
-    lv_tick_inc(UI_LVGL_TIMER_MS);
+    gui_ctx_t *g_ctx = lv_timer_get_user_data(timer);
+    lv_tick_inc(g_ctx->interval);
 }
 
 /**********************
@@ -103,7 +104,6 @@ static void gtimer_handler(lv_timer_t * timer)
 int32_t ui_main_init(gui_ctx_t **rg_ctx)
 {
     gui_ctx_t *g_ctx = NULL;
-    lv_timer_t *task_timer = NULL;
     lv_obj_t *com_scr = NULL;
     obj_meta_t *meta = NULL;
     int32_t ret;
@@ -140,14 +140,15 @@ int32_t ui_main_init(gui_ctx_t **rg_ctx)
         return -EIO;
     }
 
-    task_timer = lv_timer_create(gtimer_handler, UI_LVGL_TIMER_MS,  NULL);
-    if (task_timer == NULL) {
+    g_ctx->interval = UI_LVGL_TIMER_MS;
+    g_ctx->timer = lv_timer_create(gtimer_handler, g_ctx->interval, g_ctx);
+    if (g_ctx->timer == NULL) {
         LOG_FATAL("Failed to create timer for LVGL task handler");
         return -ENOMEM;
     }
 
     // Make lv_timer ready. It will not wait its period.
-    lv_timer_ready(task_timer);
+    lv_timer_ready(g_ctx->timer);
 
     // Initialize LVGL layers as base components
     meta = register_obj(NULL, lv_layer_sys(), NULL);

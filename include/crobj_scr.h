@@ -51,6 +51,8 @@ typedef struct obj {
 typedef struct gui {
     obj_ctx_t objs;
     scr_ctx_t scr;
+    lv_timer_t *timer;
+    uint32_t interval;
 } gui_ctx_t;
 
 /**********************
