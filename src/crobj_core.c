@@ -117,7 +117,7 @@ int32_t ui_main_init(gui_ctx_t **rg_ctx)
     else
         *rg_ctx = g_ctx;
 
-    ret = init_ui_object_ctx(g_ctx);
+    ret = init_ui_object_ctx(&g_ctx->objs);
     if (ret) {
         LOG_FATAL("Unable to init ui object list head");
         return ret;

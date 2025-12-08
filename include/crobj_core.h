@@ -30,6 +30,7 @@
 /**********************
  *      TYPEDEFS
  **********************/
+typedef struct obj obj_ctx_t;
 typedef struct gui gui_ctx_t;
 
 typedef enum {
@@ -186,7 +187,7 @@ int32_t remove_obj_and_child_by_name(const char *name, \
                                         struct list_head *head_lst);
 int32_t remove_obj_and_child(uint32_t req_id, struct list_head *head_lst);
 int32_t remove_children(lv_obj_t *par);
-int32_t init_ui_object_ctx(gui_ctx_t *g_ctx);
+int32_t init_ui_object_ctx(obj_ctx_t *o_ctx);
 void destroy_ui_object_ctx(gui_ctx_t *g_ctx);
 
 lv_obj_t *create_box(lv_obj_t *par, const char *name);

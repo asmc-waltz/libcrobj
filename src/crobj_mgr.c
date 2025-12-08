@@ -343,12 +343,12 @@ int32_t remove_children(lv_obj_t *par)
 /**
  * init_ui_object_list - Allocate and initialize the global ui object list 
  */
-int32_t init_ui_object_ctx(gui_ctx_t *g_ctx)
+int32_t init_ui_object_ctx(obj_ctx_t *o_ctx)
 {
-    if (g_ctx == NULL)
+    if (!o_ctx)
         return -EINVAL;
 
-    INIT_LIST_HEAD(&g_ctx->objs.list);
+    INIT_LIST_HEAD(&o_ctx->list);
 
     return 0;
 }

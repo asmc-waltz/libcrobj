@@ -43,7 +43,7 @@ typedef struct screen {
     space_t now;
 } scr_ctx_t;
 
-typedef struct obj_ctx {
+typedef struct obj {
     struct list_head list;              /* List of registered UI objects */
     uint32_t next_id;
 } obj_ctx_t;
