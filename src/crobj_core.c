@@ -33,6 +33,7 @@
 /**********************
  *  GLOBAL VARIABLES
  **********************/
+static gui_ctx_t *ui_rdata = NULL;
 
 /**********************
  *  STATIC PROTOTYPES
@@ -101,6 +102,20 @@ static void gtimer_handler(lv_timer_t *timer)
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
+int32_t set_ui_ctx(gui_ctx_t *g_ctx)
+{
+    if (!g_ctx)
+        return -EINVAL;
+
+    ui_rdata = g_ctx;
+    return 0;
+}
+
+gui_ctx_t *get_ui_ctx()
+{
+    return ui_rdata? ui_rdata : NULL;
+}
+
 int32_t ui_main_init(gui_ctx_t **rg_ctx)
 {
     gui_ctx_t *g_ctx = NULL;
@@ -114,13 +129,17 @@ int32_t ui_main_init(gui_ctx_t **rg_ctx)
     g_ctx = (gui_ctx_t *)calloc(1, sizeof(gui_ctx_t));
     if (!g_ctx)
         return -ENOMEM;
-    else
+    else {
         *rg_ctx = g_ctx;
+        ret = set_ui_ctx(g_ctx);
+        if (ret)
+            goto ctx_err;
+    }
 
     ret = init_ui_object_ctx(&g_ctx->objs);
     if (ret) {
         LOG_FATAL("Unable to init ui object list head");
-        return ret;
+        goto ctx_err;
     }
 
     g_ctx->objs.next_id = 1;
@@ -131,20 +150,23 @@ int32_t ui_main_init(gui_ctx_t **rg_ctx)
     lv_init();
     g_ctx->scr.drm_disp = sf_init_drm_display(DRM_CARD, DRM_CONNECTOR_ID);
     if (g_ctx->scr.drm_disp == NULL) {
-        return -EIO;
+        ret = -EIO;
+        goto init_err;
     }
 
     g_ctx->scr.touch_event = sf_init_touch_screen(TOUCH_EVENT_FILE, \
                                                 g_ctx->scr.drm_disp);
     if (g_ctx->scr.touch_event == NULL) {
-        return -EIO;
+        ret = -EIO;
+        goto init_err;
     }
 
     g_ctx->interval = UI_LVGL_TIMER_MS;
     g_ctx->timer = lv_timer_create(gtimer_handler, g_ctx->interval, g_ctx);
     if (g_ctx->timer == NULL) {
         LOG_FATAL("Failed to create timer for LVGL task handler");
-        return -ENOMEM;
+        ret = -ENOMEM;
+        goto init_err;
     }
 
     // Make lv_timer ready. It will not wait its period.
@@ -156,7 +178,8 @@ int32_t ui_main_init(gui_ctx_t **rg_ctx)
         meta->theme.level = 0;
     } else {
         LOG_FATAL("Register system layout metadata failed");
-        return -ENOMEM;
+        ret = -ENOMEM;
+        goto init_err;
     }
 
     meta = register_obj(NULL, lv_layer_top(), NULL);
@@ -164,7 +187,8 @@ int32_t ui_main_init(gui_ctx_t **rg_ctx)
         meta->theme.level = 0;
     } else {
         LOG_FATAL("Register top layer metadata failed");
-        return -ENOMEM;
+        ret = -ENOMEM;
+        goto init_err;
     }
 
     meta = register_obj(NULL, lv_screen_active(), NULL);
@@ -172,7 +196,8 @@ int32_t ui_main_init(gui_ctx_t **rg_ctx)
         meta->theme.level = 0;
     } else {
         LOG_FATAL("Register screen active metadata failed");
-        return -ENOMEM;
+        ret = -ENOMEM;
+        goto init_err;
     }
 
     meta = register_obj(NULL, lv_layer_bottom(), NULL);
@@ -180,19 +205,27 @@ int32_t ui_main_init(gui_ctx_t **rg_ctx)
         meta->theme.level = 0;
     } else {
         LOG_FATAL("Register bottom layer metadata failed");
-        return -ENOMEM;
+        ret = -ENOMEM;
+        goto init_err;
     }
 
     com_scr = create_common_screen(g_ctx, lv_screen_active(), LAYOUT_SETTING);
     if (!com_scr) {
         LOG_ERROR("Failed to create main screen, no content can be displayed");
-        return -EIO;
+        ret = -EIO;
+        goto init_err;
     }
 
     LOG_DEBUG("size of obj_meta_t: %d", sizeof(obj_meta_t));
     LOG_DEBUG("size of gui_ctx_t: %d", sizeof(gui_ctx_t));
 
     return 0;
+
+init_err:
+    destroy_ui_object_ctx(g_ctx);
+ctx_err:
+    free(g_ctx);
+    return ret;
 }
 
 void ui_main_deinit(gui_ctx_t *g_ctx)

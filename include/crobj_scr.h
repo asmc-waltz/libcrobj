@@ -69,7 +69,6 @@ typedef struct gui {
 /*=====================
  * Getter functions
  *====================*/
-gui_ctx_t *get_ctx();
 
 /*=====================
  * Other functions

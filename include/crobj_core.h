@@ -332,6 +332,7 @@ static inline const char *get_meta_name(obj_meta_t *meta)
     return meta ? meta->name : NULL;
 }
 
+gui_ctx_t *get_ui_ctx();
 int32_t ui_main_init(gui_ctx_t **g_ctx);
 void ui_main_deinit(gui_ctx_t *g_ctx);
 /**********************

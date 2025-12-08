@@ -601,7 +601,7 @@ static int32_t refresh_object_child(lv_obj_t *lobj)
  **********************/
 int32_t set_scr_rotation(int32_t rot_dir)
 {
-    gui_ctx_t *g_ctx = get_ctx();
+    gui_ctx_t *g_ctx = get_ui_ctx();
     if (g_ctx == NULL)
         return -EINVAL;
 
@@ -612,7 +612,7 @@ int32_t set_scr_rotation(int32_t rot_dir)
 
 int32_t get_scr_rotation()
 {
-    gui_ctx_t *g_ctx = get_ctx();
+    gui_ctx_t *g_ctx = get_ui_ctx();
     if (g_ctx == NULL)
         return -EINVAL;
 

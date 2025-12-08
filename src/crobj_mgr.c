@@ -71,7 +71,7 @@ obj_meta_t *register_obj(lv_obj_t *par, lv_obj_t *obj, const char *name)
 {
     struct list_head *parent_list;
     obj_meta_t *meta;
-    obj_ctx_t *obj_ctx = &get_ctx()->objs;
+    obj_ctx_t *obj_ctx = &get_ui_ctx()->objs;
 
     if (!obj)
         return NULL;
@@ -121,7 +121,7 @@ lv_obj_t *get_obj_by_id(uint32_t req_id, struct list_head *head_lst)
     struct list_head *scan_list;
     obj_meta_t *meta;
     lv_obj_t *found = NULL;
-    obj_ctx_t *obj_ctx = &get_ctx()->objs;
+    obj_ctx_t *obj_ctx = &get_ui_ctx()->objs;
 
     if (head_lst || obj_ctx) {
         scan_list = head_lst ? head_lst : &obj_ctx->list;
@@ -150,7 +150,7 @@ lv_obj_t *get_obj_by_name(const char *name, struct list_head *head_lst)
     struct list_head *scan_list;
     obj_meta_t *meta;
     lv_obj_t *found = NULL;
-    obj_ctx_t *obj_ctx = &get_ctx()->objs;
+    obj_ctx_t *obj_ctx = &get_ui_ctx()->objs;
 
     if (!name)
         return NULL;
@@ -204,7 +204,7 @@ int32_t remove_obj_and_child_by_name(const char *name, \
 {
     struct list_head *scan_list;
     obj_meta_t *meta;
-    obj_ctx_t *obj_ctx = &get_ctx()->objs;
+    obj_ctx_t *obj_ctx = &get_ui_ctx()->objs;
 
     if (!name)
         return -1;
@@ -257,7 +257,7 @@ int32_t remove_obj_and_child(uint32_t req_id, struct list_head *head_lst)
     struct list_head *scan_list = NULL;
     obj_meta_t *meta = NULL;
     obj_meta_t *tmp = NULL;
-    obj_ctx_t *obj_ctx = &get_ctx()->objs;
+    obj_ctx_t *obj_ctx = &get_ui_ctx()->objs;
     int32_t removed = 0;
 
     if (head_lst || obj_ctx) {
