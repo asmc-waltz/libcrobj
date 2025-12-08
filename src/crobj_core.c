@@ -100,13 +100,22 @@ static void gtimer_handler(lv_timer_t * timer)
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
-int32_t ui_main_init(gui_ctx_t *g_ctx)
+int32_t ui_main_init(gui_ctx_t **rg_ctx)
 {
-
+    gui_ctx_t *g_ctx = NULL;
     lv_timer_t *task_timer = NULL;
     lv_obj_t *com_scr = NULL;
     obj_meta_t *meta = NULL;
     int32_t ret;
+
+    if (!rg_ctx)
+        return -EINVAL;
+
+    g_ctx = (gui_ctx_t *)calloc(1, sizeof(gui_ctx_t));
+    if (!g_ctx)
+        return -ENOMEM;
+    else
+        *rg_ctx = g_ctx;
 
     ret = init_ui_object_ctx(g_ctx);
     if (ret) {
@@ -188,4 +197,5 @@ int32_t ui_main_init(gui_ctx_t *g_ctx)
 void ui_main_deinit(gui_ctx_t *g_ctx)
 {
     destroy_ui_object_ctx(g_ctx);
+    // TODO: Free gui context data
 }
