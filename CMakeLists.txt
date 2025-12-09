@@ -10,13 +10,13 @@ project(libcrobj
 # Build configuration
 # ------------------------------------------------------------
 option(ENABLE_LVGL_BACKEND "Enable LVGL backend support" ON)
-option(BUILD_SHARED_LIBS "Build as shared library (.so)" ON)
+option(BUILD_SHARED_LIBS "Build shared library (.so)" ON)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-# Conservative warnings: Yocto may treat -Werror as fatal in SDK
+# Conservative warnings (Yocto friendly)
 add_compile_options(-Wall -Wextra)
 
 # ------------------------------------------------------------
@@ -29,56 +29,57 @@ if(ENABLE_LVGL_BACKEND)
 endif()
 
 # ------------------------------------------------------------
-# Include directories
-# ------------------------------------------------------------
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-if(ENABLE_LVGL_BACKEND)
-    include_directories(${LVGL_INCLUDE_DIRS} ${LIBDRM_INCLUDE_DIRS})
-endif()
-
-# ------------------------------------------------------------
 # Sources
 # ------------------------------------------------------------
-file(GLOB_RECURSE LIB_SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
+# NOTE: Avoid GLOB for reproducible builds (Yocto best practice)
+set(CROBJ_SOURCES
+    src/crobj_align.c
+    src/crobj_border.c
+    src/crobj_core.c
+    src/crobj_creator.c
+    src/crobj_mgr.c
+    src/crobj_padding.c
+    src/crobj_rotation.c
+    src/crobj_size.c
+
+    src/layouts/crobj_flex.c
+    src/layouts/crobj_grid.c
 )
 
-# ------------------------------------------------------------
-# Library definition
-# ------------------------------------------------------------
-set(LIB_VERSION 1.0.0)
-add_library(crobj SHARED ${LIB_SOURCES})
+add_library(crobj SHARED ${CROBJ_SOURCES})
 
 set_target_properties(crobj PROPERTIES
-    VERSION ${LIB_VERSION}
+    VERSION ${PROJECT_VERSION}
     SOVERSION 1
-    OUTPUT_NAME "crobj"
-    PUBLIC_HEADER ""
     C_VISIBILITY_PRESET hidden
     VISIBILITY_INLINES_HIDDEN YES
 )
 
 # ------------------------------------------------------------
-# Linking
-# ------------------------------------------------------------
-if(ENABLE_LVGL_BACKEND)
-    target_link_libraries(crobj
-        ${LVGL_LIBRARIES}
-        ${LIBDRM_LIBRARIES}
-    )
-endif()
-
-# ------------------------------------------------------------
-# Exported headers
+# Includes
 # ------------------------------------------------------------
 target_include_directories(crobj
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
+
+if(ENABLE_LVGL_BACKEND)
+    target_include_directories(crobj PRIVATE
+        ${LVGL_INCLUDE_DIRS}
+        ${LIBDRM_INCLUDE_DIRS}
+    )
+endif()
+
+# ------------------------------------------------------------
+# Linking
+# ------------------------------------------------------------
+if(ENABLE_LVGL_BACKEND)
+    target_link_libraries(crobj PRIVATE
+        ${LVGL_LIBRARIES}
+        ${LIBDRM_LIBRARIES}
+    )
+endif()
 
 # ------------------------------------------------------------
 # Installation rules
@@ -94,21 +95,22 @@ configure_file(
 install(TARGETS crobj
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+# Install public headers
 install(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libcrobj
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/crobj
 )
 
+# Install pkg-config file
 install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/libcrobj.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
 # ------------------------------------------------------------
-# Status summary
+# Summary
 # ------------------------------------------------------------
 message(STATUS "")
 message(STATUS "----------------------------------------")
