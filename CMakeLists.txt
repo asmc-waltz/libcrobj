@@ -44,6 +44,9 @@ set(CROBJ_SOURCES
 
     src/layouts/crobj_flex.c
     src/layouts/crobj_grid.c
+
+    src/widget/crobj_widget_common.c
+    src/widget/crobj_menu.c
 )
 
 add_library(crobj SHARED ${CROBJ_SOURCES})
@@ -51,8 +54,8 @@ add_library(crobj SHARED ${CROBJ_SOURCES})
 set_target_properties(crobj PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1
-    C_VISIBILITY_PRESET hidden
-    VISIBILITY_INLINES_HIDDEN YES
+    C_VISIBILITY_PRESET default
+    VISIBILITY_INLINES_HIDDEN NO
 )
 
 # ------------------------------------------------------------
