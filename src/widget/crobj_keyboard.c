@@ -1,5 +1,5 @@
 /**
- * @file keyboard.c
+ * @file crobj_keyboard.c
  *
  */
 
@@ -126,6 +126,7 @@ static int32_t set_keyboard_mode(const key_def *key);
  *  STATIC VARIABLES
  **********************/
 static const keyboard_def *act_map;
+static lv_obj_t *keyboard = NULL;
 
 static const key_def key_abc[] = {
     {"line_01", T_HOLDER, 0, 0, 0, 0}, \
@@ -463,7 +464,7 @@ static void set_key_color(lv_obj_t *lobj, const key_def *key)
  * The output data will be shared for both key layout and resize, whenever
  * the parent size is changed.
  */
-int32_t calc_kb_size_data(lv_obj_t *par, kb_size_ctx *size)
+static int32_t calc_kb_size_data(lv_obj_t *par, kb_size_ctx *size)
 {
     int32_t key_com_h, key_com_w, key_mode_w, key_space_w, key_enter_w;
     int32_t key_arrow_w, key_fn_w;
@@ -514,7 +515,7 @@ int32_t calc_kb_size_data(lv_obj_t *par, kb_size_ctx *size)
     return 0;
 }
 
-void set_line_box_size(lv_obj_t *par, lv_obj_t *line_box, kb_size_ctx *size, \
+static void set_line_box_size(lv_obj_t *par, lv_obj_t *line_box, kb_size_ctx *size, \
                        int32_t line_w)
 {
     int32_t obj_h = 0;
@@ -566,7 +567,7 @@ static lv_obj_t *create_key(lv_obj_t *par, const key_def *key, kb_size_ctx *size
     return btn;
 }
 
-int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
+static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
 {
     lv_obj_t *btn, *btn_aln;
     lv_obj_t *line_box;
@@ -636,7 +637,7 @@ int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
     return 0;
 }
 
-int32_t update_keys_layout(lv_obj_t *par, const keyboard_def *map)
+static int32_t update_keys_layout(lv_obj_t *par, const keyboard_def *map)
 {
     lv_obj_t *btn, *btn_aln, *btn_lbl;
     lv_obj_t *line_box = NULL;
@@ -823,14 +824,11 @@ static int32_t change_keyboard_mode(lv_obj_t *par, const keyboard_def *map, \
 
 static int32_t set_keyboard_mode(const key_def *key)
 {
-    lv_obj_t *kb;
     const keyboard_def *map;
     int32_t ret;
 
-    kb = get_obj_by_name(COMPS_KEYBOARD, \
-                                   &get_meta(lv_screen_active())->child);
-    if (!kb) {
-        LOG_ERROR("Keyboard [%s] not found", COMPS_KEYBOARD);
+    if (!keyboard) {
+        LOG_ERROR("Keyboard not found");
         return -EINVAL;
     }
 
@@ -839,7 +837,7 @@ static int32_t set_keyboard_mode(const key_def *key)
         return -EINVAL;
 
 
-    ret = change_keyboard_mode(kb, &kb_maps[0], map);
+    ret = change_keyboard_mode(keyboard, &kb_maps[0], map);
     if (ret) {
         LOG_ERROR("Unable to switch keyboard map, ret %d", ret);
     }
@@ -847,7 +845,7 @@ static int32_t set_keyboard_mode(const key_def *key)
     return ret;
 }
 
-int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
+static int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
 {
     lv_obj_t *par;
     int32_t scr_rot;
@@ -879,17 +877,16 @@ int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
     return 0;
 }
 
-    // Resize parent
-lv_obj_t *create_keyboard_containter(lv_obj_t *par)
+static lv_obj_t *create_keyboard_containter(lv_obj_t *par, const char *name)
 {
     lv_obj_t *cont;
     int32_t obj_w, obj_h;
 
-    if (!par)
+    if (!par | !name)
         return NULL;
 
     /* Create container box for the keyboard and all button */
-    cont = create_box(par, COMPS_KEYBOARD);
+    cont = create_box(par, name);
     if (!cont)
         return NULL;
 
@@ -909,30 +906,37 @@ lv_obj_t *create_keyboard_containter(lv_obj_t *par)
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
-lv_obj_t *create_keyboard(lv_obj_t *par)
+lv_obj_t *create_keyboard(lv_obj_t *par, const char *name)
 {
     lv_obj_t *kb;
     const keyboard_def *map = &kb_maps[0];
     int32_t ret;
+
+    if (!par || !name) {
+        LOG_ERR("Unable to create keyboard without parent | name");
+        return NULL;
+    }
 
     if (act_map) {
         LOG_WARN("Keyboard already active, please recall the previous one");
         return NULL;
     }
 
-    kb = create_keyboard_containter(par);
+    kb = create_keyboard_containter(par, name);
     if (!kb)
         return NULL;
 
     ret = create_keys_layout(kb, map);
     if (ret) {
         LOG_ERROR("Create keyboard failed %d, remove container ret %d", ret, \
-                   remove_obj_and_child_by_name(COMPS_KEYBOARD, \
+                   remove_obj_and_child_by_name(name, \
                                             &get_meta(par)->child));
         return NULL;
     }
 
+    // TODO: multiple keyboard?
     act_map = map;
+    keyboard = kb;
 
     if (get_scr_rotation() != ROTATION_0) {
         refresh_object_tree_layout(kb);
@@ -941,23 +945,25 @@ lv_obj_t *create_keyboard(lv_obj_t *par)
     return kb;
 }
 
-void remove_keyboard(gui_ctx_t *g_ctx)
+int32_t remove_keyboard(void)
 {
-    lv_obj_t *par, *kb;
+    lv_obj_t *par;
     int32_t ret;
 
-    if (!g_ctx || !g_ctx->scr.now.obj)
-        return;
+    par = lv_obj_is_valid(keyboard) ? lv_obj_get_parent(keyboard) : NULL;
+    if (!par) {
+        LOG_ERR("Unable to find and remove keyboard without parent");
+        return -EIO;
+    }
 
-    par = g_ctx->scr.now.obj;
+    ret = remove_obj_and_child(get_meta(keyboard)->id, &get_meta(par)->child);
+    if (ret)
+        LOG_WARN("Keyboard object not found");
 
     if (act_map) {
         act_map = NULL;
+        keyboard = NULL;
     }
-
-    ret = remove_obj_and_child_by_name(COMPS_KEYBOARD, &get_meta(par)->child);
-    if (ret)
-        LOG_WARN("Keyboard object not found");
 
     ret = refresh_object_tree_layout(par);
     if (ret)

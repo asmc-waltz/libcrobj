@@ -16,7 +16,6 @@
 /*********************
  *      DEFINES
  *********************/
-#define COMPS_KEYBOARD                  "comps.keyboard"
 #define KEYBOARD_CHAR_FONTS             &lv_font_montserrat_24
 
 /**********************
@@ -39,6 +38,9 @@
 /*=====================
  * Other functions
  *====================*/
+lv_obj_t *create_keyboard(lv_obj_t *par, const char *name);
+int32_t remove_keyboard(void);
+
 /**********************
  *      MACROS
  **********************/
