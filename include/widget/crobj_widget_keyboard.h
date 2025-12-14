@@ -1,27 +1,23 @@
 /**
- * @file crobj.h
+ * @file crobj_widget_keyboard.h
  *
  */
 
-#ifndef G_CROBJ_H
-#define G_CROBJ_H
+#ifndef G_CROBJ_WIDGET_KEYBOARD_H
+#define G_CROBJ_WIDGET_KEYBOARD_H
 /*********************
  *      INCLUDES
  *********************/
 #include <stdint.h>
 
 #include <lvgl.h>
+#include "../crobj_core.h"
 
-#include "crobj_core.h"
-#include "crobj_grid.h"
-#include "crobj_flex.h"
-#include "crobj_scr.h"
-#include "widget/crobj_widget_menu.h"
-#include "widget/crobj_widget_keyboard.h"
-#include "widget/crobj_widget_common.h"
 /*********************
  *      DEFINES
  *********************/
+#define COMPS_KEYBOARD                  "comps.keyboard"
+#define KEYBOARD_CHAR_FONTS             &lv_font_montserrat_24
 
 /**********************
  *      TYPEDEFS
@@ -37,17 +33,14 @@
 /*=====================
  * Setter functions
  *====================*/
-
 /*=====================
  * Getter functions
  *====================*/
-
 /*=====================
  * Other functions
  *====================*/
-
 /**********************
  *      MACROS
  **********************/
 
-#endif /* G_CROBJ_H */
+#endif /* G_CROBJ_WIDGET_KEYBOARD_H */

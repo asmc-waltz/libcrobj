@@ -47,6 +47,7 @@ set(CROBJ_SOURCES
 
     src/widget/crobj_widget_common.c
     src/widget/crobj_menu.c
+    src/widget/crobj_keyboard.c
 )
 
 add_library(crobj SHARED ${CROBJ_SOURCES})
