@@ -913,7 +913,7 @@ lv_obj_t *create_keyboard(lv_obj_t *par, const char *name)
     int32_t ret;
 
     if (!par || !name) {
-        LOG_ERR("Unable to create keyboard without parent | name");
+        LOG_ERROR("Unable to create keyboard without parent | name");
         return NULL;
     }
 
@@ -952,10 +952,11 @@ int32_t remove_keyboard(void)
 
     par = lv_obj_is_valid(keyboard) ? lv_obj_get_parent(keyboard) : NULL;
     if (!par) {
-        LOG_ERR("Unable to find and remove keyboard without parent");
+        LOG_ERROR("Unable to find and remove keyboard without parent");
         return -EIO;
     }
 
+    // TODO:
     ret = remove_obj_and_child(get_meta(keyboard)->id, &get_meta(par)->child);
     if (ret)
         LOG_WARN("Keyboard object not found");
