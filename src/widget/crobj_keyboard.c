@@ -917,7 +917,7 @@ lv_obj_t *create_keyboard(lv_obj_t *par, const char *name)
         return NULL;
     }
 
-    if (act_map) {
+    if (lv_obj_is_valid(keyboard) && act_map) {
         LOG_WARN("Keyboard already active, please recall the previous one");
         return NULL;
     }
