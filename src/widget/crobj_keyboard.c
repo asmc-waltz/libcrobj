@@ -6,7 +6,7 @@
 /*********************
  *      INCLUDES
  *********************/
-// #define LOG_LEVEL LOG_LEVEL_TRACE
+#define LOG_LEVEL LOG_LEVEL_TRACE
 #if defined(LOG_LEVEL)
 #warning "LOG_LEVEL defined locally will override the global setting in this file"
 #endif
@@ -22,6 +22,7 @@
 #include <crobj.h>
 
 #include "../../include/crobj_core.h"
+#include "../../include/widget/crobj_widget_common.h"
 #include "../../include/widget/crobj_widget_keyboard.h"
 
 /*********************
@@ -30,7 +31,7 @@
 #define KEYBOARD_WIDTH                  100      // %
 #define KEYBOARD_HEIGHT                 100      // %
 #define KEYBOARD_PAD_TOP                0       // %
-#define KEYBOARD_PAD_BOT                1       // %
+// #define KEYBOARD_PAD_BOT                1       // %
 #define KEYBOARD_PAD_LEFT               1       // %
 #define KEYBOARD_PAD_RIGHT              1       // %
 
@@ -42,10 +43,11 @@
 #define KEYBOARD_LINE                   4
 #define KEYBOARD_LINE_PAD_TOP           2       // %
 #define KEYBOARD_LINE_PAD_BOT           2       // %
-#define KEYBOARD_LINE_HEIGHT            ((100 - (KEYBOARD_LINE * \
-                                         (KEYBOARD_LINE_PAD_TOP + \
-                                         KEYBOARD_LINE_PAD_BOT))) / \
-                                         KEYBOARD_LINE)     // %
+#define KEYBOARD_LINE_HEIGHT            100
+// #define KEYBOARD_LINE_HEIGHT            ((100 - (KEYBOARD_LINE * \
+//                                          (KEYBOARD_LINE_PAD_TOP + \
+//                                          KEYBOARD_LINE_PAD_BOT))) / \
+//                                          KEYBOARD_LINE)     // %
 #define KEY_PAD_LEFT                    1       // %
 #define KEY_PAD_RIGHT                   1       // %
 #define KEY_FIRST_LINE                  10      // Number of the first line keys
@@ -438,7 +440,9 @@ static void set_key_size(lv_obj_t *lobj, const key_def *key, kb_size_ctx *size)
         break;
     }
 
-    set_size(lobj, key_w, size->key_com_h);
+    LOG_TRACE("KEYSIZE: %d \%, %d \%", key_w, size->key_com_h);
+    // set_size(lobj, LV_PCT(key_w), LV_PCT(size->key_com_h));
+    set_size(lobj, LV_PCT(key_w), LV_PCT(100));
 }
 
 static void set_key_color(lv_obj_t *lobj, const key_def *key)
@@ -477,23 +481,36 @@ static int32_t calc_kb_size_data(lv_obj_t *par, kb_size_ctx *size)
     // TODO: Parent scale height and width ?
     // e.g. par_h = 250;
     //      par_w = 580;
-    par_h = get_h(par);
-    par_w = get_w(par);
+    // par_h = get_h(par);
+    // par_w = get_w(par);
 
 
-    l_pad_top = pct_to_px(par_h, KEYBOARD_LINE_PAD_TOP);
-    l_pad_bot = pct_to_px(par_h, KEYBOARD_LINE_PAD_BOT);
+    // l_pad_top = pct_to_px(par_h, KEYBOARD_LINE_PAD_TOP);
+    // l_pad_bot = pct_to_px(par_h, KEYBOARD_LINE_PAD_BOT);
+    //
+    // k_pad_left = pct_to_px(par_w, KEY_PAD_LEFT);
+    // k_pad_right = pct_to_px(par_w, KEY_PAD_RIGHT);
+    //
+    // key_com_h = pct_to_px(par_h, KEYBOARD_LINE_HEIGHT);
+    // key_com_w = pct_to_px(par_w, KEY_CHAR_WIDTH);
+    // key_space_w = pct_to_px(par_w, KEY_SPACE_WIDTH);
+    // key_mode_w = pct_to_px(par_w, KEY_MODE_WIDTH);
+    // key_enter_w = pct_to_px(par_w, KEY_ENTER_WIDTH);
+    // key_arrow_w = pct_to_px(par_w, KEY_ARROW_WIDTH);
+    // key_fn_w = pct_to_px(par_w, KEY_FN_WIDTH);
 
-    k_pad_left = pct_to_px(par_w, KEY_PAD_LEFT);
-    k_pad_right = pct_to_px(par_w, KEY_PAD_RIGHT);
+    l_pad_top = KEYBOARD_LINE_PAD_TOP;
+    l_pad_bot = KEYBOARD_LINE_PAD_BOT;
 
-    key_com_h = pct_to_px(par_h, KEYBOARD_LINE_HEIGHT);
-    key_com_w = pct_to_px(par_w, KEY_CHAR_WIDTH);
-    key_space_w = pct_to_px(par_w, KEY_SPACE_WIDTH);
-    key_mode_w = pct_to_px(par_w, KEY_MODE_WIDTH);
-    key_enter_w = pct_to_px(par_w, KEY_ENTER_WIDTH);
-    key_arrow_w = pct_to_px(par_w, KEY_ARROW_WIDTH);
-    key_fn_w = pct_to_px(par_w, KEY_FN_WIDTH);
+    k_pad_left = KEY_PAD_LEFT;
+    k_pad_right = KEY_PAD_RIGHT;
+    key_com_h = KEYBOARD_LINE_HEIGHT;
+    key_com_w = KEY_CHAR_WIDTH;
+    key_space_w = KEY_SPACE_WIDTH;
+    key_mode_w = KEY_MODE_WIDTH;
+    key_enter_w = KEY_ENTER_WIDTH;
+    key_arrow_w = KEY_ARROW_WIDTH;
+    key_fn_w = KEY_FN_WIDTH;
     
     LOG_TRACE("KB: Parent: \tw[%d] - h[%d]", par_w, par_h);
     LOG_TRACE("KB: Key: \tPadding: top[%d] bot[%d] - left[%d] right[%d]", \
@@ -521,7 +538,13 @@ static void set_line_box_size(lv_obj_t *par, lv_obj_t *line_box, kb_size_ctx *si
     int32_t obj_h = 0;
 
     obj_h = size->l_pad_top + size->key_com_h + size->l_pad_bot;
-    set_size(line_box, line_w, obj_h);
+    LOG_TRACE("SET LINE BOX SIZE PCT: %d - %d", line_w, obj_h);
+    // set_size(line_box, LV_PCT(line_w), LV_PCT(obj_h));
+
+    // set_size(line_box, LV_PCT(98), LV_PCT(25));
+    lv_obj_set_width(line_box, LV_PCT(100));
+    lv_obj_set_height(line_box, LV_SIZE_CONTENT);
+    lv_obj_set_flex_grow(line_box, 1);
 }
 
 lv_obj_t *create_line_box(lv_obj_t *par, kb_size_ctx *size, \
@@ -529,12 +552,17 @@ lv_obj_t *create_line_box(lv_obj_t *par, kb_size_ctx *size, \
 {
     lv_obj_t *line_box;
 
-    line_box = create_box(par, box_info->label);
+    line_box = create_horizontal_flex_group(par, box_info->label);
+    // line_box = create_box(par, box_info->label);
     if (!line_box)
         return NULL;
 
-    lv_obj_set_style_bg_opa(line_box, LV_OPA_0, 0);
-    // lv_obj_set_style_bg_color(line_box, lv_color_hex(0xBDBDBD), 0);
+    lv_obj_set_flex_grow(line_box, 1);
+    set_padding(line_box, 0, 0, 0, 0);
+    set_row_padding(line_box, 0);
+
+    lv_obj_set_style_bg_opa(line_box, LV_OPA_50, 0);
+    lv_obj_set_style_bg_color(line_box, lv_color_hex(0x0000FF), 0);
 
     return line_box;
 }
@@ -555,10 +583,12 @@ static lv_obj_t *create_key(lv_obj_t *par, const key_def *key, kb_size_ctx *size
     lv_obj_set_style_pad_all(btn, 0, 0);
     lv_obj_set_style_pad_gap(btn, 0, 0);
     lv_obj_set_style_shadow_width(btn, 0, 0);
+    set_padding(btn, 0, 0, 0, 0);
     lv_obj_add_event_cb(btn, kb_key_cb, LV_EVENT_CLICKED, get_meta(btn));
-    set_key_size(btn, key, size);
+    //set_key_size(btn, key, size);
+    lv_obj_set_flex_grow(btn, 1);
 
-    lbl = create_text(btn, NULL, KEYBOARD_CHAR_FONTS, key->label);
+    lbl = create_text_box(btn, NULL, KEYBOARD_CHAR_FONTS, key->label);
     if (!lbl) {
         remove_obj_and_child_by_name(key->label, &get_par_meta(par)->child);
         return NULL;
@@ -594,8 +624,8 @@ static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
             set_line_box_size(par, line_box, &size, line_w);
             line_w = 0;
             // Align the current line box before create the next one
-            set_align(line_box, par, LV_ALIGN_TOP_LEFT, \
-                             line_x_ofs, line_y_ofs);
+            // set_align(line_box, par, LV_ALIGN_TOP_LEFT, \
+            //                  line_x_ofs, line_y_ofs);
             LOG_TRACE("KB line box [%d]: alignment x %d - y %d", line_cnt, \
                       line_x_ofs, line_y_ofs);
 
@@ -610,6 +640,8 @@ static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
             if (!line_box)
                 return -EINVAL;
 
+            // TODO:
+            set_line_box_size(par, line_box, &size, line_w);
             continue;
         }
 
@@ -619,16 +651,18 @@ static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
 
         if (new_line) {
             new_line = false;
-            set_align(btn, line_box, LV_ALIGN_TOP_LEFT, \
-                             size.k_pad_left, size.l_pad_top);
+            // TODO: Flex Flow instead of align
+            // set_align(btn, line_box, LV_ALIGN_TOP_LEFT, \
+            //           LV_PCT(size.k_pad_left), LV_PCT(size.l_pad_top));
         } else {
-            set_align(btn, btn_aln, LV_ALIGN_OUT_RIGHT_TOP, \
-                             (size.k_pad_left + size.k_pad_right), 0);
+            // TODO: Flex Flow instead of align
+            // set_align(btn, btn_aln, LV_ALIGN_OUT_RIGHT_TOP, \
+            //           LV_PCT(size.k_pad_left + size.k_pad_right), 0);
         }
 
         // The previous button is used to align the next one
         btn_aln = btn;
-        /* set_key_size(btn, &map->key[i], &size); */
+        set_key_size(btn, &map->key[i], &size);
         set_key_color(btn, &map->key[i]);
         set_internal_data(btn, (void *)&map->key[i]);
         line_w += size.k_pad_left + get_meta(btn)->size.w + size.k_pad_right;
@@ -849,7 +883,7 @@ static int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
 {
     lv_obj_t *par;
     int32_t scr_rot;
-    int32_t obj_w = 0, obj_h = 0;
+    // int32_t obj_w = 0, obj_h = 0;
 
     par = lv_obj_get_parent(kb);
     if (!par)
@@ -858,17 +892,21 @@ static int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
     // Keyboard size is based on rotation is ROTATION_0
     scr_rot = get_scr_rotation();
     if (scr_rot == ROTATION_0 || scr_rot == ROTATION_180) {
-        obj_w = pct_to_px(get_w(par), KEYBOARD_WIDTH);
-        obj_h = pct_to_px(get_h(par), KEYBOARD_HEIGHT);
+        // obj_w = pct_to_px(get_w(par), KEYBOARD_WIDTH);
+        // obj_h = pct_to_px(get_h(par), KEYBOARD_HEIGHT);
+
+        set_size(kb, LV_PCT(KB_CONT_SIZE_PCT_W), LV_PCT(KB_CONT_SIZE_PCT_H));
     } else if (scr_rot == ROTATION_90 || scr_rot == ROTATION_270) {
-        obj_w = pct_to_px(get_h(par), KEYBOARD_WIDTH);
-        obj_h = pct_to_px(get_w(par), KEYBOARD_HEIGHT);
+        // obj_w = pct_to_px(get_h(par), KEYBOARD_WIDTH);
+        // obj_h = pct_to_px(get_w(par), KEYBOARD_HEIGHT);
+        set_size(kb, LV_PCT(KB_CONT_SIZE_PCT_H), LV_PCT(KB_CONT_SIZE_PCT_W));
     }
 
     // Reset all keyboard configurations to the horizontal layout.
-    set_size(kb, obj_w, obj_h);
+    // set_size(kb, obj_w, obj_h);
     get_meta(kb)->data.rotation = ROTATION_0;
-    set_align_scale(kb, par, LV_ALIGN_BOTTOM_MID, 0, -KEYBOARD_PAD_BOT);
+    // set_align_scale(kb, par, LV_ALIGN_BOTTOM_MID, 0, -KEYBOARD_PAD_BOT);
+    set_align(kb, par, LV_ALIGN_CENTER, 0, 0);
 
     // TODO: map?
     const keyboard_def *map = &kb_maps[0];
@@ -880,23 +918,35 @@ static int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
 static lv_obj_t *create_keyboard_containter(lv_obj_t *par, const char *name)
 {
     lv_obj_t *cont;
-    int32_t obj_w, obj_h;
+    // int32_t obj_w, obj_h;
 
     if (!par | !name)
         return NULL;
 
     /* Create container box for the keyboard and all button */
-    cont = create_box(par, name);
+
+    cont = create_vertical_flex_group(par, name);
+    // cont = create_box(par, name);
     if (!cont)
         return NULL;
 
     /* Calculate setting container size as percentage of parent size */
-    obj_w = pct_to_px(get_w(par), KEYBOARD_WIDTH);
-    obj_h = pct_to_px(get_h(par), KEYBOARD_HEIGHT);
+    // obj_w = pct_to_px(get_w(par), KEYBOARD_WIDTH);
+    // obj_h = pct_to_px(get_h(par), KEYBOARD_HEIGHT);
 
-    set_size(cont, obj_w, obj_h);
-    lv_obj_set_style_bg_color(cont, lv_color_hex(KEYBOARD_BG_COLOR), 0);
-    set_align_scale(cont, par, LV_ALIGN_BOTTOM_MID, 0, -KEYBOARD_PAD_BOT);
+    // set_size(cont, obj_w, obj_h);
+
+    // set_row_padding(cont, 4);
+
+    set_padding(cont, 0, 0, 0, 0);
+    set_row_padding(cont, 4);
+    set_size(cont, LV_PCT(KB_CONT_SIZE_PCT_W), LV_PCT(KB_CONT_SIZE_PCT_H));
+
+    // NOTE: GREEN BG for keyboard
+    lv_obj_set_style_bg_color(cont, lv_color_hex(0x00FF00), 0);
+    // set_align_scale(cont, par, LV_ALIGN_BOTTOM_MID, 0, -KEYBOARD_PAD_BOT);
+
+    set_align(cont, par, LV_ALIGN_CENTER, 0, 0);
 
     get_meta(cont)->data.pre_rotate_cb = pre_rotation_redraw_kb_layout;
 
