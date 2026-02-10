@@ -18,6 +18,9 @@
  *********************/
 #define KEYBOARD_CHAR_FONTS             &lv_font_montserrat_24
 
+#define KB_CONT_SIZE_PCT_W              100
+#define KB_CONT_SIZE_PCT_H              100
+
 /**********************
  *      TYPEDEFS
  **********************/
