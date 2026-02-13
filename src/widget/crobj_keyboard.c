@@ -28,8 +28,6 @@
 /*********************
  *      DEFINES
  *********************/
-#define KEYBOARD_WIDTH                  100      // %
-#define KEYBOARD_HEIGHT                 100      // %
 #define KEYBOARD_PAD_TOP                0       // %
 // #define KEYBOARD_PAD_BOT                1       // %
 #define KEYBOARD_PAD_LEFT               1       // %
@@ -883,7 +881,6 @@ static int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
 {
     lv_obj_t *par;
     int32_t scr_rot;
-    // int32_t obj_w = 0, obj_h = 0;
 
     par = lv_obj_get_parent(kb);
     if (!par)
@@ -892,20 +889,13 @@ static int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
     // Keyboard size is based on rotation is ROTATION_0
     scr_rot = get_scr_rotation();
     if (scr_rot == ROTATION_0 || scr_rot == ROTATION_180) {
-        // obj_w = pct_to_px(get_w(par), KEYBOARD_WIDTH);
-        // obj_h = pct_to_px(get_h(par), KEYBOARD_HEIGHT);
-
         set_size(kb, LV_PCT(KB_CONT_SIZE_PCT_W), LV_PCT(KB_CONT_SIZE_PCT_H));
     } else if (scr_rot == ROTATION_90 || scr_rot == ROTATION_270) {
-        // obj_w = pct_to_px(get_h(par), KEYBOARD_WIDTH);
-        // obj_h = pct_to_px(get_w(par), KEYBOARD_HEIGHT);
         set_size(kb, LV_PCT(KB_CONT_SIZE_PCT_H), LV_PCT(KB_CONT_SIZE_PCT_W));
     }
 
     // Reset all keyboard configurations to the horizontal layout.
-    // set_size(kb, obj_w, obj_h);
     get_meta(kb)->data.rotation = ROTATION_0;
-    // set_align_scale(kb, par, LV_ALIGN_BOTTOM_MID, 0, -KEYBOARD_PAD_BOT);
     set_align(kb, par, LV_ALIGN_CENTER, 0, 0);
 
     // TODO: map?
@@ -918,34 +908,20 @@ static int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
 static lv_obj_t *create_keyboard_containter(lv_obj_t *par, const char *name)
 {
     lv_obj_t *cont;
-    // int32_t obj_w, obj_h;
 
     if (!par | !name)
         return NULL;
 
     /* Create container box for the keyboard and all button */
-
     cont = create_vertical_flex_group(par, name);
-    // cont = create_box(par, name);
     if (!cont)
         return NULL;
-
-    /* Calculate setting container size as percentage of parent size */
-    // obj_w = pct_to_px(get_w(par), KEYBOARD_WIDTH);
-    // obj_h = pct_to_px(get_h(par), KEYBOARD_HEIGHT);
-
-    // set_size(cont, obj_w, obj_h);
-
-    // set_row_padding(cont, 4);
 
     set_padding(cont, 0, 0, 0, 0);
     set_row_padding(cont, 4);
     set_size(cont, LV_PCT(KB_CONT_SIZE_PCT_W), LV_PCT(KB_CONT_SIZE_PCT_H));
-
     // NOTE: GREEN BG for keyboard
     lv_obj_set_style_bg_color(cont, lv_color_hex(0x00FF00), 0);
-    // set_align_scale(cont, par, LV_ALIGN_BOTTOM_MID, 0, -KEYBOARD_PAD_BOT);
-
     set_align(cont, par, LV_ALIGN_CENTER, 0, 0);
 
     get_meta(cont)->data.pre_rotate_cb = pre_rotation_redraw_kb_layout;
