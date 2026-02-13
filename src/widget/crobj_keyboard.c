@@ -46,8 +46,8 @@
 //                                          (KEYBOARD_LINE_PAD_TOP + \
 //                                          KEYBOARD_LINE_PAD_BOT))) / \
 //                                          KEYBOARD_LINE)     // %
-#define KEY_PAD_LEFT                    1       // %
-#define KEY_PAD_RIGHT                   1       // %
+#define KEY_PAD_LEFT                    0       // %
+#define KEY_PAD_RIGHT                   0       // %
 #define KEY_FIRST_LINE                  10      // Number of the first line keys
 #define KEY_CHAR_WIDTH                  ((100 - (KEY_FIRST_LINE * \
                                          (KEY_PAD_LEFT + KEY_PAD_RIGHT))) / \
@@ -438,9 +438,8 @@ static void set_key_size(lv_obj_t *lobj, const key_def *key, kb_size_ctx *size)
         break;
     }
 
-    LOG_TRACE("KEYSIZE: %d \%, %d \%", key_w, size->key_com_h);
-    // set_size(lobj, LV_PCT(key_w), LV_PCT(size->key_com_h));
     set_size(lobj, LV_PCT(key_w), LV_PCT(100));
+    lv_obj_set_flex_grow(lobj, key_w);
 }
 
 static void set_key_color(lv_obj_t *lobj, const key_def *key)
@@ -466,99 +465,43 @@ static void set_key_color(lv_obj_t *lobj, const key_def *key)
  * The output data will be shared for both key layout and resize, whenever
  * the parent size is changed.
  */
-static int32_t calc_kb_size_data(lv_obj_t *par, kb_size_ctx *size)
+static int32_t build_kb_size_data(kb_size_ctx *size)
 {
-    int32_t key_com_h, key_com_w, key_mode_w, key_space_w, key_enter_w;
-    int32_t key_arrow_w, key_fn_w;
-    int32_t l_pad_top, l_pad_bot, k_pad_left, k_pad_right;
-    int32_t par_h, par_w;
-
-    if (!par || !size)
+    if (!size)
         return -EINVAL;
 
-    // TODO: Parent scale height and width ?
-    // e.g. par_h = 250;
-    //      par_w = 580;
-    // par_h = get_h(par);
-    // par_w = get_w(par);
-
-
-    // l_pad_top = pct_to_px(par_h, KEYBOARD_LINE_PAD_TOP);
-    // l_pad_bot = pct_to_px(par_h, KEYBOARD_LINE_PAD_BOT);
-    //
-    // k_pad_left = pct_to_px(par_w, KEY_PAD_LEFT);
-    // k_pad_right = pct_to_px(par_w, KEY_PAD_RIGHT);
-    //
-    // key_com_h = pct_to_px(par_h, KEYBOARD_LINE_HEIGHT);
-    // key_com_w = pct_to_px(par_w, KEY_CHAR_WIDTH);
-    // key_space_w = pct_to_px(par_w, KEY_SPACE_WIDTH);
-    // key_mode_w = pct_to_px(par_w, KEY_MODE_WIDTH);
-    // key_enter_w = pct_to_px(par_w, KEY_ENTER_WIDTH);
-    // key_arrow_w = pct_to_px(par_w, KEY_ARROW_WIDTH);
-    // key_fn_w = pct_to_px(par_w, KEY_FN_WIDTH);
-
-    l_pad_top = KEYBOARD_LINE_PAD_TOP;
-    l_pad_bot = KEYBOARD_LINE_PAD_BOT;
-
-    k_pad_left = KEY_PAD_LEFT;
-    k_pad_right = KEY_PAD_RIGHT;
-    key_com_h = KEYBOARD_LINE_HEIGHT;
-    key_com_w = KEY_CHAR_WIDTH;
-    key_space_w = KEY_SPACE_WIDTH;
-    key_mode_w = KEY_MODE_WIDTH;
-    key_enter_w = KEY_ENTER_WIDTH;
-    key_arrow_w = KEY_ARROW_WIDTH;
-    key_fn_w = KEY_FN_WIDTH;
-    
-    LOG_TRACE("KB: Parent: \tw[%d] - h[%d]", par_w, par_h);
-    LOG_TRACE("KB: Key: \tPadding: top[%d] bot[%d] - left[%d] right[%d]", \
-              l_pad_top, l_pad_bot, k_pad_left, k_pad_right);
-    LOG_TRACE("KB: Key: \tSize: w[%d] h[%d]", key_com_w, key_com_h);
-     
-    size->l_pad_top = l_pad_top;
-    size->l_pad_bot = l_pad_bot;
-    size->k_pad_left = k_pad_left;
-    size->k_pad_right = k_pad_right;
-    size->key_com_h = key_com_h;
-    size->key_com_w = key_com_w;
-    size->key_space_w = key_space_w;
-    size->key_mode_w = key_mode_w;
-    size->key_enter_w = key_enter_w;
-    size->key_arrow_w = key_arrow_w;
-    size->key_fn_w = key_fn_w;
+    size->l_pad_top = KEYBOARD_LINE_PAD_TOP;
+    size->l_pad_bot = KEYBOARD_LINE_PAD_BOT;
+    size->k_pad_left = KEY_PAD_LEFT;
+    size->k_pad_right = KEY_PAD_RIGHT;
+    size->key_com_h = KEYBOARD_LINE_HEIGHT;
+    size->key_com_w = KEY_CHAR_WIDTH;
+    size->key_space_w = KEY_SPACE_WIDTH;
+    size->key_mode_w = KEY_MODE_WIDTH;
+    size->key_enter_w = KEY_ENTER_WIDTH;
+    size->key_arrow_w = KEY_ARROW_WIDTH;
+    size->key_fn_w = KEY_FN_WIDTH;
 
     return 0;
 }
 
-static void set_line_box_size(lv_obj_t *par, lv_obj_t *line_box, kb_size_ctx *size, \
-                       int32_t line_w)
-{
-    int32_t obj_h = 0;
-
-    obj_h = size->l_pad_top + size->key_com_h + size->l_pad_bot;
-    LOG_TRACE("SET LINE BOX SIZE PCT: %d - %d", line_w, obj_h);
-    // set_size(line_box, LV_PCT(line_w), LV_PCT(obj_h));
-
-    // set_size(line_box, LV_PCT(98), LV_PCT(25));
-    lv_obj_set_width(line_box, LV_PCT(100));
-    lv_obj_set_height(line_box, LV_SIZE_CONTENT);
-    lv_obj_set_flex_grow(line_box, 1);
-}
-
-lv_obj_t *create_line_box(lv_obj_t *par, kb_size_ctx *size, \
+lv_obj_t *create_line_of_keys_holder(lv_obj_t *par, kb_size_ctx *size, \
                           const key_def *box_info)
 {
     lv_obj_t *line_box;
 
     line_box = create_horizontal_flex_group(par, box_info->label);
-    // line_box = create_box(par, box_info->label);
     if (!line_box)
         return NULL;
 
-    lv_obj_set_flex_grow(line_box, 1);
     set_padding(line_box, 0, 0, 0, 0);
     set_row_padding(line_box, 0);
+    set_column_padding(line_box, 0);
+    lv_obj_set_flex_grow(line_box, 1);
 
+    set_flex_layout_align(line_box,LV_FLEX_ALIGN_SPACE_EVENLY,LV_FLEX_ALIGN_CENTER,LV_FLEX_ALIGN_CENTER);
+
+    // TODO: remove
     lv_obj_set_style_bg_opa(line_box, LV_OPA_50, 0);
     lv_obj_set_style_bg_color(line_box, lv_color_hex(0x0000FF), 0);
 
@@ -597,49 +540,26 @@ static lv_obj_t *create_key(lv_obj_t *par, const key_def *key, kb_size_ctx *size
 
 static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
 {
-    lv_obj_t *btn, *btn_aln;
-    lv_obj_t *line_box;
-    int8_t line_cnt = 0, i;
-    int32_t line_h, line_w = 0;
+    lv_obj_t *btn, *line_box;
+    int8_t i;
     kb_size_ctx size;
-    bool new_line = true;
 
-    if (calc_kb_size_data(par, &size)) {
-        LOG_ERROR("Unable to calculate keyboard child size");
+    if (build_kb_size_data(&size)) {
+        LOG_ERROR("Unable to create keyboard child size data");
         return -EINVAL;
     }
-
-    line_h = size.l_pad_top + size.key_com_h + size.l_pad_bot;
 
     for (i = 0; i < map->size; i++) {
         LOG_TRACE("KB name [%s]: index[%d] character[%s] type[%d]", \
                    map->name, i, map->key[i].label, map->key[i].type);
 
         if (map->key[i].type == T_NEWLINE || map->key[i].type == T_END) {
-            int32_t line_x_ofs = (get_w(par) - line_w) / 2;
-            int32_t line_y_ofs = (size.l_pad_top + (line_h * line_cnt));
-
-            set_line_box_size(par, line_box, &size, line_w);
-            line_w = 0;
-            // Align the current line box before create the next one
-            // set_align(line_box, par, LV_ALIGN_TOP_LEFT, \
-            //                  line_x_ofs, line_y_ofs);
-            LOG_TRACE("KB line box [%d]: alignment x %d - y %d", line_cnt, \
-                      line_x_ofs, line_y_ofs);
-
-            if (map->key[i].type == T_NEWLINE) {
-                line_cnt++;
-                new_line = true;
-            }
-
             continue;
         } else if (map->key[i].type == T_HOLDER) {
-            line_box = create_line_box(par, &size, &map->key[i]);
+            line_box = create_line_of_keys_holder(par, &size, &map->key[i]);
             if (!line_box)
                 return -EINVAL;
 
-            // TODO:
-            set_line_box_size(par, line_box, &size, line_w);
             continue;
         }
 
@@ -647,23 +567,10 @@ static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
         if (!btn)
             return -EINVAL;
 
-        if (new_line) {
-            new_line = false;
-            // TODO: Flex Flow instead of align
-            // set_align(btn, line_box, LV_ALIGN_TOP_LEFT, \
-            //           LV_PCT(size.k_pad_left), LV_PCT(size.l_pad_top));
-        } else {
-            // TODO: Flex Flow instead of align
-            // set_align(btn, btn_aln, LV_ALIGN_OUT_RIGHT_TOP, \
-            //           LV_PCT(size.k_pad_left + size.k_pad_right), 0);
-        }
-
         // The previous button is used to align the next one
-        btn_aln = btn;
         set_key_size(btn, &map->key[i], &size);
         set_key_color(btn, &map->key[i]);
         set_internal_data(btn, (void *)&map->key[i]);
-        line_w += size.k_pad_left + get_meta(btn)->size.w + size.k_pad_right;
     }
 
     return 0;
@@ -678,7 +585,7 @@ static int32_t update_keys_layout(lv_obj_t *par, const keyboard_def *map)
     kb_size_ctx size;
     bool new_line = true;
 
-    if (calc_kb_size_data(par, &size)) {
+    if (build_kb_size_data(&size)) {
         LOG_ERROR("Unable to calculate keyboard child size");
         return -EINVAL;
     }
@@ -693,7 +600,6 @@ static int32_t update_keys_layout(lv_obj_t *par, const keyboard_def *map)
             int32_t line_x_ofs = (get_w(par) - line_w) / 2;
             int32_t line_y_ofs = (size.l_pad_top + (line_h * line_cnt));
 
-            set_line_box_size(par, line_box, &size, line_w);
             line_w = 0;
             // Align the current line box before create the next one
             set_align(line_box, par, LV_ALIGN_TOP_LEFT, \
@@ -918,7 +824,7 @@ static lv_obj_t *create_keyboard_containter(lv_obj_t *par, const char *name)
         return NULL;
 
     set_padding(cont, 0, 0, 0, 0);
-    set_row_padding(cont, 4);
+    set_row_padding(cont, 0);
     set_size(cont, LV_PCT(KB_CONT_SIZE_PCT_W), LV_PCT(KB_CONT_SIZE_PCT_H));
     // NOTE: GREEN BG for keyboard
     lv_obj_set_style_bg_color(cont, lv_color_hex(0x00FF00), 0);
