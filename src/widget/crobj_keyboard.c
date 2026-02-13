@@ -526,7 +526,6 @@ static lv_obj_t *create_key(lv_obj_t *par, const key_def *key, kb_size_ctx *size
     lv_obj_set_style_shadow_width(btn, 0, 0);
     set_padding(btn, 0, 0, 0, 0);
     lv_obj_add_event_cb(btn, kb_key_cb, LV_EVENT_CLICKED, get_meta(btn));
-    //set_key_size(btn, key, size);
     lv_obj_set_flex_grow(btn, 1);
 
     lbl = create_text_box(btn, NULL, KEYBOARD_CHAR_FONTS, key->label);
@@ -534,6 +533,8 @@ static lv_obj_t *create_key(lv_obj_t *par, const key_def *key, kb_size_ctx *size
         remove_obj_and_child_by_name(key->label, &get_par_meta(par)->child);
         return NULL;
     }
+
+    set_align(lbl, btn, LV_ALIGN_CENTER, 0, 0);
 
     return btn;
 }
