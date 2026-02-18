@@ -574,54 +574,8 @@ static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
         set_internal_data(btn, (void *)&map->key[i]);
     }
 
-    return 0;
-}
-
-static int32_t update_keys_layout(lv_obj_t *par, const keyboard_def *map)
-{
-    lv_obj_t *btn, *btn_lbl;
-    int8_t i;
-    lv_obj_t *line_box = NULL;
-    kb_size_ctx size;
-
-    if (build_kb_size_data(&size)) {
-        LOG_ERROR("Unable to calculate keyboard child size");
-        return -EINVAL;
-    }
-
-    for (i = 0; i < map->size; i++) {
-        LOG_TRACE("KB name [%s]: index[%d] character[%s] type[%d]", \
-                   map->name, i, map->key[i].label, map->key[i].type);
-
-        if (map->key[i].type == T_NEWLINE || map->key[i].type == T_END) {
-            continue;
-        } else if (map->key[i].type == T_HOLDER) {
-            line_box = get_obj_by_name(map->key[i].label, \
-                    &get_meta(par)->child);
-            if (!line_box)
-                return -EINVAL;
-            get_meta(line_box)->data.rotation = ROTATION_0;
-            continue;
-        }
-
-        btn = get_obj_by_name(map->key[i].label, \
-                                 &get_meta(line_box)->child);
-        if (!btn) {
-            LOG_ERROR("Key [%s] not found", map->key[i].label);
-            continue;
-        }
-
-        set_key_color(btn, &map->key[i]);
-
-        // Update button label configurations to the horizontal map.
-        btn_lbl = lv_obj_get_child(btn, 0);
-        set_pos_center(btn_lbl);
-        // Reset key configurations to the horizontal map.
-        get_meta(btn)->data.rotation = ROTATION_0;
-        get_meta(btn_lbl)->data.rotation = ROTATION_0;
-    }
-
-    return 0;
+    // TODO:
+    return refresh_object_tree_layout(par);
 }
 
 static const keyboard_def *find_map_next(const key_def *key)
@@ -742,34 +696,6 @@ static int32_t set_keyboard_mode(const key_def *key)
     return ret;
 }
 
-static int32_t pre_rotation_redraw_kb_layout(lv_obj_t *kb)
-{
-    lv_obj_t *par;
-    int32_t scr_rot;
-
-    par = lv_obj_get_parent(kb);
-    if (!par)
-        return -EINVAL;
-
-    // Keyboard size is based on rotation is ROTATION_0
-    scr_rot = get_scr_rotation();
-    if (scr_rot == ROTATION_0 || scr_rot == ROTATION_180) {
-        set_size(kb, LV_PCT(KB_CONT_SIZE_PCT_W), LV_PCT(KB_CONT_SIZE_PCT_H));
-    } else if (scr_rot == ROTATION_90 || scr_rot == ROTATION_270) {
-        set_size(kb, LV_PCT(KB_CONT_SIZE_PCT_H), LV_PCT(KB_CONT_SIZE_PCT_W));
-    }
-
-    // Reset all keyboard configurations to the horizontal layout.
-    get_meta(kb)->data.rotation = ROTATION_0;
-    set_align(kb, par, LV_ALIGN_CENTER, 0, 0);
-
-    // TODO: map?
-    const keyboard_def *map = &kb_maps[0];
-    update_keys_layout(kb, map);
-
-    return 0;
-}
-
 static lv_obj_t *create_keyboard_containter(lv_obj_t *par, const char *name)
 {
     lv_obj_t *cont;
@@ -784,12 +710,10 @@ static lv_obj_t *create_keyboard_containter(lv_obj_t *par, const char *name)
 
     set_padding(cont, 0, 0, 0, 0);
     set_row_padding(cont, 0);
-    set_size(cont, LV_PCT(KB_CONT_SIZE_PCT_W), LV_PCT(KB_CONT_SIZE_PCT_H));
+    set_size(cont, LV_PCT(100), LV_PCT(100));
     // NOTE: GREEN BG for keyboard
     lv_obj_set_style_bg_color(cont, lv_color_hex(0x00FF00), 0);
     set_align(cont, par, LV_ALIGN_CENTER, 0, 0);
-
-    get_meta(cont)->data.pre_rotate_cb = pre_rotation_redraw_kb_layout;
 
     return cont;
 }
