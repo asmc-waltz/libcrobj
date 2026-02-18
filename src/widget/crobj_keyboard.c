@@ -579,53 +579,28 @@ static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
 
 static int32_t update_keys_layout(lv_obj_t *par, const keyboard_def *map)
 {
-    lv_obj_t *btn, *btn_aln, *btn_lbl;
+    lv_obj_t *btn, *btn_lbl;
+    int8_t i;
     lv_obj_t *line_box = NULL;
-    int8_t line_cnt = 0, i;
-    int32_t line_h, line_w = 0;
     kb_size_ctx size;
-    bool new_line = true;
 
     if (build_kb_size_data(&size)) {
         LOG_ERROR("Unable to calculate keyboard child size");
         return -EINVAL;
     }
 
-    line_h = size.l_pad_top + size.key_com_h + size.l_pad_bot;
-
     for (i = 0; i < map->size; i++) {
         LOG_TRACE("KB name [%s]: index[%d] character[%s] type[%d]", \
                    map->name, i, map->key[i].label, map->key[i].type);
 
         if (map->key[i].type == T_NEWLINE || map->key[i].type == T_END) {
-            int32_t line_x_ofs = (get_w(par) - line_w) / 2;
-            int32_t line_y_ofs = (size.l_pad_top + (line_h * line_cnt));
-
-            line_w = 0;
-            // Align the current line box before create the next one
-            set_align(line_box, par, LV_ALIGN_TOP_LEFT, \
-                             line_x_ofs, line_y_ofs);
-
-            LOG_TRACE("KB line box [%d]: alignment x %d - y %d", line_cnt, \
-                      line_x_ofs, line_y_ofs);
-
-            if (map->key[i].type == T_NEWLINE) {
-                line_cnt++;
-                new_line = true;
-            }
-
             continue;
         } else if (map->key[i].type == T_HOLDER) {
             line_box = get_obj_by_name(map->key[i].label, \
-                                          &get_meta(par)->child);
-            // TODO:
-            /************** SOMETHING WRONG AT THE END OF THIS ***************/
-            // if (!line_box)
-            //     LOG_ERROR("line box [%s] not found", map->key[i].label);
-            //     return -EINVAL;
-            /************** SOMETHING WRONG AT THE ABOVE OF THIS *************/
+                    &get_meta(par)->child);
+            if (!line_box)
+                return -EINVAL;
             get_meta(line_box)->data.rotation = ROTATION_0;
-
             continue;
         }
 
@@ -636,31 +611,14 @@ static int32_t update_keys_layout(lv_obj_t *par, const keyboard_def *map)
             continue;
         }
 
-        if (new_line) {
-            new_line = false;
-            set_align(btn, line_box, LV_ALIGN_TOP_LEFT, \
-                             size.k_pad_left, size.l_pad_top);
-        } else {
-            set_align(btn, btn_aln, LV_ALIGN_OUT_RIGHT_TOP, \
-                             (size.k_pad_left + size.k_pad_right), 0);
-        }
-
-        // The previous button is used to align the next one
-        btn_aln = btn;
-
-        // Update button configurations to the horizontal map.
-        set_key_size(btn, &map->key[i], &size);
         set_key_color(btn, &map->key[i]);
 
         // Update button label configurations to the horizontal map.
         btn_lbl = lv_obj_get_child(btn, 0);
         set_pos_center(btn_lbl);
-
         // Reset key configurations to the horizontal map.
         get_meta(btn)->data.rotation = ROTATION_0;
         get_meta(btn_lbl)->data.rotation = ROTATION_0;
-
-        line_w += size.k_pad_left + get_meta(btn)->size.w + size.k_pad_right;
     }
 
     return 0;
