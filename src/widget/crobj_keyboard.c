@@ -574,8 +574,7 @@ static int32_t create_keys_layout(lv_obj_t *par, const keyboard_def *map)
         set_internal_data(btn, (void *)&map->key[i]);
     }
 
-    // TODO:
-    return refresh_object_tree_layout(par);
+    return 0;
 }
 
 static const keyboard_def *find_map_next(const key_def *key)
@@ -753,9 +752,9 @@ lv_obj_t *create_keyboard(lv_obj_t *par, const char *name)
     act_map = map;
     keyboard = kb;
 
-    if (get_scr_rotation() != ROTATION_0) {
-        refresh_object_tree_layout(kb);
-    }
+    ret = refresh_object_tree_layout(kb);
+    if (ret)
+        LOG_WARN("Unable to refresh after create keyboard");
 
     return kb;
 }
