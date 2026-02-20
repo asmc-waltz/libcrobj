@@ -28,24 +28,11 @@
 /*********************
  *      DEFINES
  *********************/
-#define KEYBOARD_PAD_TOP                0       // %
-// #define KEYBOARD_PAD_BOT                1       // %
-#define KEYBOARD_PAD_LEFT               1       // %
-#define KEYBOARD_PAD_RIGHT              1       // %
-
 #define KEYBOARD_BG_COLOR               0xADBACC
 #define NORM_K_COLOR                    0xFFFFFF
 #define FUNC_K_COLOR                    0xCCD6E3
 #define NORM_K_TEXT_COLOR               0x000000
 
-#define KEYBOARD_LINE                   4
-#define KEYBOARD_LINE_PAD_TOP           2       // %
-#define KEYBOARD_LINE_PAD_BOT           2       // %
-#define KEYBOARD_LINE_HEIGHT            100
-// #define KEYBOARD_LINE_HEIGHT            ((100 - (KEYBOARD_LINE * \
-//                                          (KEYBOARD_LINE_PAD_TOP + \
-//                                          KEYBOARD_LINE_PAD_BOT))) / \
-//                                          KEYBOARD_LINE)     // %
 #define KEY_PAD_LEFT                    0       // %
 #define KEY_PAD_RIGHT                   0       // %
 #define KEY_FIRST_LINE                  10      // Number of the first line keys
@@ -66,11 +53,8 @@
  *      TYPEDEFS
  **********************/
 typedef struct kb_ctx {
-    int32_t l_pad_top;
-    int32_t l_pad_bot;
     int32_t k_pad_left;
     int32_t k_pad_right;
-    int32_t key_com_h;
     int32_t key_com_w;
     int32_t key_space_w;
     int32_t key_mode_w;
@@ -470,11 +454,8 @@ static int32_t build_kb_size_data(kb_size_ctx *size)
     if (!size)
         return -EINVAL;
 
-    size->l_pad_top = KEYBOARD_LINE_PAD_TOP;
-    size->l_pad_bot = KEYBOARD_LINE_PAD_BOT;
     size->k_pad_left = KEY_PAD_LEFT;
     size->k_pad_right = KEY_PAD_RIGHT;
-    size->key_com_h = KEYBOARD_LINE_HEIGHT;
     size->key_com_w = KEY_CHAR_WIDTH;
     size->key_space_w = KEY_SPACE_WIDTH;
     size->key_mode_w = KEY_MODE_WIDTH;
@@ -502,8 +483,8 @@ lv_obj_t *create_line_of_keys_holder(lv_obj_t *par, kb_size_ctx *size, \
     set_flex_layout_align(line_box,LV_FLEX_ALIGN_SPACE_EVENLY,LV_FLEX_ALIGN_CENTER,LV_FLEX_ALIGN_CENTER);
 
     // TODO: remove
-    lv_obj_set_style_bg_opa(line_box, LV_OPA_50, 0);
-    lv_obj_set_style_bg_color(line_box, lv_color_hex(0x0000FF), 0);
+    lv_obj_set_style_bg_opa(line_box, LV_OPA_0, 0);
+    // lv_obj_set_style_bg_color(line_box, lv_color_hex(0x0000FF), 0);
 
     return line_box;
 }
@@ -708,8 +689,7 @@ static lv_obj_t *create_keyboard_containter(lv_obj_t *par, const char *name)
     set_padding(cont, 0, 0, 0, 0);
     set_row_padding(cont, 0);
     set_size(cont, LV_PCT(100), LV_PCT(100));
-    // NOTE: GREEN BG for keyboard
-    lv_obj_set_style_bg_color(cont, lv_color_hex(0x00FF00), 0);
+    lv_obj_set_style_bg_color(cont, lv_color_hex(KEYBOARD_BG_COLOR), 0);
     set_align(cont, par, LV_ALIGN_CENTER, 0, 0);
 
     return cont;
