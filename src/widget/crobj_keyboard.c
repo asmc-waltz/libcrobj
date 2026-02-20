@@ -644,25 +644,23 @@ static int32_t change_keyboard_mode(lv_obj_t *par, const keyboard_def *map, \
             continue;
         } else if (map->key[i].type == T_HOLDER) {
             line_box = get_obj_by_name(map->key[i].label, \
-                                          &get_meta(par)->child);
-            // TODO:
-            /************** SOMETHING WRONG AT THE END OF THIS ***************/
-            // if (!line_box)
-            //     LOG_ERROR("line box [%s] not found", map->key[i].label);
-            //     return -EINVAL;
-            /************** SOMETHING WRONG AT THE ABOVE OF THIS *************/
+                                       &get_meta(par)->child);
+            if (!line_box)
+                return -EINVAL;
+
             continue;
         }
 
-        btn = get_obj_by_name(map->key[i].label, \
-                                 &get_meta(line_box)->child);
+        btn = get_obj_by_name(map->key[i].label, &get_meta(line_box)->child);
         if (!btn) {
             LOG_ERROR("Key [%s] not found", map->key[i].label);
             continue;
         }
 
         set_key_color(btn, &next_map->key[i]);
+        // NOTE: update text box label
         lv_obj_t * label = lv_obj_get_child(btn, 0);
+        label = lv_obj_get_child(label, 0);
         lv_label_set_text_fmt(label, "%s", next_map->key[i].label);
         set_internal_data(btn, (void *)&next_map->key[i]);
     }
