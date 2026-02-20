@@ -33,8 +33,8 @@
 #define FUNC_K_COLOR                    0xCCD6E3
 #define NORM_K_TEXT_COLOR               0x000000
 
-#define KEY_PAD_LEFT                    0       // %
-#define KEY_PAD_RIGHT                   0       // %
+#define KEY_PAD_LEFT                    0.5       // %
+#define KEY_PAD_RIGHT                   0.5       // %
 #define KEY_FIRST_LINE                  10      // Number of the first line keys
 #define KEY_CHAR_WIDTH                  ((100 - (KEY_FIRST_LINE * \
                                          (KEY_PAD_LEFT + KEY_PAD_RIGHT))) / \
@@ -423,7 +423,7 @@ static void set_key_size(lv_obj_t *lobj, const key_def *key, kb_size_ctx *size)
     }
 
     set_size(lobj, LV_PCT(key_w), LV_PCT(100));
-    lv_obj_set_flex_grow(lobj, key_w);
+    // lv_obj_set_flex_grow(lobj, key_w);
 }
 
 static void set_key_color(lv_obj_t *lobj, const key_def *key)
@@ -476,15 +476,16 @@ lv_obj_t *create_line_of_keys_holder(lv_obj_t *par, kb_size_ctx *size, \
         return NULL;
 
     set_padding(line_box, 0, 0, 0, 0);
-    set_row_padding(line_box, 0);
-    set_column_padding(line_box, 0);
+    set_column_padding(line_box, 4);
     lv_obj_set_flex_grow(line_box, 1);
 
-    set_flex_layout_align(line_box,LV_FLEX_ALIGN_SPACE_EVENLY,LV_FLEX_ALIGN_CENTER,LV_FLEX_ALIGN_CENTER);
+    set_flex_layout_align(line_box, \
+                          LV_FLEX_ALIGN_CENTER, \
+                          LV_FLEX_ALIGN_CENTER, \
+                          LV_FLEX_ALIGN_CENTER);
 
     // TODO: remove
     lv_obj_set_style_bg_opa(line_box, LV_OPA_0, 0);
-    // lv_obj_set_style_bg_color(line_box, lv_color_hex(0x0000FF), 0);
 
     return line_box;
 }
@@ -507,7 +508,7 @@ static lv_obj_t *create_key(lv_obj_t *par, const key_def *key, kb_size_ctx *size
     lv_obj_set_style_shadow_width(btn, 0, 0);
     set_padding(btn, 0, 0, 0, 0);
     lv_obj_add_event_cb(btn, kb_key_cb, LV_EVENT_CLICKED, get_meta(btn));
-    lv_obj_set_flex_grow(btn, 1);
+    // lv_obj_set_flex_grow(btn, 1);
 
     lbl = create_text_box(btn, NULL, KEYBOARD_CHAR_FONTS, key->label);
     if (!lbl) {
@@ -686,8 +687,8 @@ static lv_obj_t *create_keyboard_containter(lv_obj_t *par, const char *name)
     if (!cont)
         return NULL;
 
-    set_padding(cont, 0, 0, 0, 0);
-    set_row_padding(cont, 0);
+    set_padding(cont, 4, 4, 4, 4);
+    set_row_padding(cont, 4);
     set_size(cont, LV_PCT(100), LV_PCT(100));
     lv_obj_set_style_bg_color(cont, lv_color_hex(KEYBOARD_BG_COLOR), 0);
     set_align(cont, par, LV_ALIGN_CENTER, 0, 0);
