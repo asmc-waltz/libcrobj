@@ -282,7 +282,8 @@ lv_obj_t *create_switch_box(lv_obj_t *par, const char *name)
         return NULL;
     }
 
-    set_size(box, get_w(swit), get_h(swit));
+    // NOTE: add switch box padding
+    set_size(box, 1.2 * get_w(swit), 1.2 * get_h(swit));
     set_pos_center(swit);
 
     return box;
