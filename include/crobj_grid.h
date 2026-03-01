@@ -76,6 +76,7 @@ int32_t add_grid_layout_col_dsc(lv_obj_t *lobj, int32_t val);
 int32_t add_grid_layout_row_dsc(lv_obj_t *lobj, int32_t val);
 int32_t apply_grid_layout_dsc(lv_obj_t *lobj);
 int32_t remove_grid_layout_last_row_dsc(lv_obj_t *lobj);
+int32_t remove_grid_layout_last_column_dsc(lv_obj_t *lobj);
 
 int32_t config_grid_layout_align(lv_obj_t *lobj, \
                         lv_grid_align_t col_align, lv_grid_align_t row_align);
