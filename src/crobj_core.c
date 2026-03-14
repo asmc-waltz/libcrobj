@@ -75,6 +75,7 @@ static lv_display_t *sf_init_drm_display(const char *file, \
 
     device = lv_linux_drm_find_device_path();
     lv_linux_drm_set_file(disp, device, -1);
+    // lv_display_set_render_mode(disp, LV_DISPLAY_RENDER_MODE_FULL);
     /* Free the path pointer */
     lv_free(device);
 

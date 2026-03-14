@@ -24,7 +24,7 @@
 #define DRM_CARD                        "/dev/dri/renderD128"
 #define DRM_CONNECTOR_ID                -1
 
-#define TOUCH_EVENT_FILE                "/dev/input/event4"
+#define TOUCH_EVENT_FILE                "/dev/input/event5"
 
 #define LAYOUT_SETTING                  "layout.setting"
 /**********************
